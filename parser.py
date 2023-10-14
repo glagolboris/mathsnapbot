@@ -33,7 +33,11 @@ class Parser:
 
         async with self.session.post(url=self.url_for_OCR, headers=headers, data=data) as response:
             response_json = await response.json()
-            return response_json['AsciiMath']
+            print(response_json)
+            if response_json['AsciiMath'].count(',') == 1:
+                return response_json['AsciiMath'].replace('{', '').replace('}', '').replace('[', '', 1).replace(']', '', 1).replace(':', '').replace(',', '\n')
+            else:
+                return response_json['AsciiMath'].replace('{', '').replace('}', '').replace('[', '', 1).replace(']', '', 1).replace(':', '')
 
     async def get_editor(self, response_get_equation) -> tuple:
         json_data = {"metadata": {
@@ -67,7 +71,7 @@ class Parser:
                      "topicId": f"{response_get_editor[1]}",
                      "topicText": response_get_editor[0],
                      "subject": "Algebra",
-                     "asciiMath": response_get_equation.replace('{', '').replace('}', '').replace('[', '').replace(']', '').replace(':', '').replace(',', '\n'),
+                     "asciiMath": response_get_equation,
         }
 
         headers = {
@@ -82,6 +86,7 @@ class Parser:
         async with self.session.post(url=self.for_solve, headers=headers, json=json_data) as response:
             response_json = await response.json()
             answer_in_html_tags = re.findall('<math>(.*?)</math>', response_json['messages'][0]['content'])
+            print(response_json)
             answer: str = ''
             for ans in answer_in_html_tags:
                 answer += f"{BeautifulSoup(ans, 'html.parser').text};"

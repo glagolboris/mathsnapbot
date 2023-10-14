@@ -21,9 +21,7 @@ class AioBot:
     def handler_on_start(self):
         @self.dispatcher.message(CommandStart())
         async def handler_on_start(message: Message):
-            builder = InlineKeyboardBuilder()
-            builder.button(text='Solve equation', callback_data='solve')
-            await message.answer(f'Bot is working', reply_markup=builder.as_markup())
+            await message.answer(f'Бот работает')
 
     def handler_of_photo(self):
         @self.dispatcher.message(lambda m: m.photo)
@@ -33,8 +31,9 @@ class AioBot:
             photo_in_bytes = await self.bot.download_file(photo_id.file_path)
             async with aiohttp.ClientSession() as session:
                 parser = Parser(session, base64.b64encode(photo_in_bytes.read()))
+                await self.bot.send_message(m.chat.id, f'ASCII код этого объекта: \n{await parser.get_equation}')
                 answer = await parser.run_solve()
-                await self.bot.send_message(m.chat.id, answer)
+                await self.bot.send_message(m.chat.id, f'Решения этого объекта: \n {answer}')
 
     def handler_callbacks(self):
         @self.dispatcher.callback_query(lambda call: call.data == 'solve')
