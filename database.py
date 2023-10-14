@@ -22,3 +22,8 @@ class Database:
         async with sql.connect("database.sqlite") as db:
             await db.execute(*args, **kwargs)
             await db.commit()
+
+    async def executemany(*args, **kwargs):
+        async with sql.connect("database.sqlite") as db:
+            await db.executemany(*args, **kwargs)
+            await db.commit()
