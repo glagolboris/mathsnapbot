@@ -8,6 +8,7 @@ from aiogram.utils.callback_answer import CallbackAnswerMiddleware
 import asyncio
 import base64
 from parser import Parser
+import text
 # TODO: STATE находится в ответе на запрос editor
 #  OCR запрос на расшифровку фото
 
@@ -37,21 +38,7 @@ class AioBot:
 
         @self.dispatcher.message(Command('help'))
         async def get_help(message: Message):
-            await self.bot.send_message(message.chat.id, """Как использовать MathSnapBot (MSB):
-1. Отправьте фотографию:
- Отправьте боту фотографию математической задачи. MSB распознает ее автоматически.
-
-2. Проверьте распознание:
-  Проверьте, правильно ли бот распознал задачу. Если нет, перепишите ее вручную.
-
-3. Получите решение:
- MSB решит задачу и вернет вам решение и ответ.
-
-4. Команда /story:
- Используйте команду /story, чтобы увидеть список последних 10 решений, отправленных ботом.
-
-
-Надеемся, это руководство поможет вам получить максимум от MathSnapBot. Успешных решений!""")
+            await self.bot.send_message(message.chat.id, text.help)
 
     def handler_callbacks(self):
         @self.dispatcher.callback_query(lambda call: call.data == 'solve')
