@@ -22,7 +22,7 @@ class AioBot:
     def handler_on_start(self):
         @self.dispatcher.message(CommandStart())
         async def handler_on_start(message: Message):
-            await message.answer(f'Бот работает')
+            await self.bot.send_photo(message.chat.id, caption=text.start(), photo='')
 
     def handler_of_photo(self):
         @self.dispatcher.message(lambda m: m.photo)
@@ -39,7 +39,7 @@ class AioBot:
         @self.dispatcher.message(Command('help'))
         async def get_help(message: Message):
             help_ = text.help()
-            await self.bot.send_message(message.chat.id, help_)
+            await self.bot.send_photo(message.chat.id, help_, photo='')
 
     def handler_callbacks(self):
         @self.dispatcher.callback_query(lambda call: call.data == 'solve')
