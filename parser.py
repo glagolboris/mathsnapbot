@@ -85,10 +85,10 @@ class Parser:
 
         async with self.session.post(url=self.for_solve, headers=headers, json=json_data) as response:
             response_json = await response.json()
-            print(response_json)
             answer_in_html_tags = re.findall('<math>(.*?)</math>', response_json['messages'][0]['content'])
-            print(answer_in_html_tags)
-            answer: str = ''
+            solution_method_soup = BeautifulSoup(response_json['messages'][0]['content'], 'html.parser')
+            solution_method = solution_method_soup.find('div', class_='Explanation').text
+            answer: str = f'{solution_method}\n'
             for ans in answer_in_html_tags:
                 print(BeautifulSoup(ans, 'html.parser').text)
                 if re.search('×', BeautifulSoup(ans, 'html.parser').text):
