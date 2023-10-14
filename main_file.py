@@ -1,6 +1,6 @@
 import aiohttp
 from aiogram import Bot, Dispatcher
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
@@ -34,6 +34,24 @@ class AioBot:
                 await self.bot.send_message(m.chat.id, f'ASCII код этого объекта: \n{await parser.get_equation}')
                 answer = await parser.run_solve()
                 await self.bot.send_message(m.chat.id, f'Решения этого объекта: \n {answer}')
+
+        @self.dispatcher.message(Command('help'))
+        async def get_help(message: Message):
+            await self.bot.send_message(message.chat.id, """Как использовать MathSnapBot (MSB):
+1. Отправьте фотографию:
+ Отправьте боту фотографию математической задачи. MSB распознает ее автоматически.
+
+2. Проверьте распознание:
+  Проверьте, правильно ли бот распознал задачу. Если нет, перепишите ее вручную.
+
+3. Получите решение:
+ MSB решит задачу и вернет вам решение и ответ.
+
+4. Команда /story:
+ Используйте команду /story, чтобы увидеть список последних 10 решений, отправленных ботом.
+
+
+Надеемся, это руководство поможет вам получить максимум от MathSnapBot. Успешных решений!""")
 
     def handler_callbacks(self):
         @self.dispatcher.callback_query(lambda call: call.data == 'solve')
