@@ -26,11 +26,6 @@ class AioBot:
             await message.answer(f'Bot is working', reply_markup=builder.as_markup())
 
     def handler_of_photo(self):
-        """
-        хандлер фото от юзера
-
-        :return:
-        """
         @self.dispatcher.message(lambda m: m.photo)
         async def get_photo_with_equation(m: Message):
             photo = m.photo[-1]
