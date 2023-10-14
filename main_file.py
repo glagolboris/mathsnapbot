@@ -24,7 +24,7 @@ class AioBot:
     def handler_on_start(self):
         @self.dispatcher.message(CommandStart())
         async def handler_on_start(message: Message):
-            await self.bot.send_photo(message.chat.id, photo=BufferedInputFile.from_file(path='/Users/egor/PycharmProjects/hakaton/photos/start.jpg', filename='start.jpg'))
+            await self.bot.send_photo(message.chat.id, photo=BufferedInputFile.from_file(path='photos/start.jpg', filename='start.jpg'), caption=text.start())
 
     def handler_of_photo(self):
         @self.dispatcher.message(lambda m: m.photo)
@@ -41,7 +41,7 @@ class AioBot:
         @self.dispatcher.message(Command('help'))
         async def get_help(message: Message):
             help_ = text.help()
-            await self.bot.send_photo(message.chat.id, caption=help_, photo='/Users/egor/PycharmProjects/hakaton/photos/help_photo.jpg')
+            await self.bot.send_photo(message.chat.id, caption=help_, photo=BufferedInputFile.from_file('photos/help_photo.jpg', filename='help_photo.jpg'))
 
     def handler_callbacks(self):
         @self.dispatcher.callback_query(lambda call: call.data == 'solve')
