@@ -24,7 +24,7 @@ class AioBot:
     def handler_on_start(self):
         @self.dispatcher.message(CommandStart())
         async def handler_on_start(message: Message):
-            await self.bot.send_photo(message.chat.id, photo=InputFile('/Users/egor/PycharmProjects/hakaton/photos/start.jpg'))
+            await self.bot.send_photo(message.chat.id, photo=BufferedInputFile.from_file(path='/Users/egor/PycharmProjects/hakaton/photos/start.jpg', filename='start.jpg'))
 
     def handler_of_photo(self):
         @self.dispatcher.message(lambda m: m.photo)
