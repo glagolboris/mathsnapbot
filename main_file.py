@@ -18,6 +18,11 @@ class AioBot:
         self.builder.add(button)
         self.dispatcher = Dispatcher()
         self.run_sync_func()
+        self.builder2 = InlineKeyboardBuilder()
+        button_yes = InlineKeyboardButton(text='Да', callback_data='recognize_yes')
+        button_no = InlineKeyboardButton(text='Нет', callback_data='recognize_no')
+        self.builder2.add(button_yes, button_no)
+
 
     def handler_on_start(self):
         @self.dispatcher.message(CommandStart())
@@ -32,9 +37,9 @@ class AioBot:
             photo_in_bytes = await self.bot.download_file(photo_id.file_path)
             async with aiohttp.ClientSession() as session:
                 parser = Parser(session, base64.b64encode(photo_in_bytes.read()))
-                await self.bot.send_message(m.chat.id, f'ASCII код этого объекта: \n{await parser.get_equation}')
-                answer = await parser.run_solve()
-                await self.bot.send_message(m.chat.id, f'Решения этого объекта: \n {answer}')
+                await self.bot.send_message(m.chat.id, f'Выражение было распознано как: \n```{await parser.get_equation}```\. '
+                                                       f'\nВерно?', reply_markup=self.builder2.as_markup(), parse_mode="MarkdownV2")
+
 
         @self.dispatcher.message(Command('help'))
         async def get_help(message: Message):
@@ -47,8 +52,12 @@ class AioBot:
             msg = self.bot.send_photo(call.message.chat.id, photo=BufferedInputFile.from_file('photos/help_photo.jpg', filename='help.jpg'), caption=text.help())
             await msg
 
-    async def callback_of(self, msg):
-        await self.bot.send_message(msg.message.chat.id, 'aboba')
+        @self.dispatcher.callback_query(lambda call: call.data == 'recognize_yes')
+        async def callback(call: CallbackQuery):
+            answer = await parser.run_solve()
+            await self.bot.send_message(call.message.chat.id, f'Решения этого объекта: \n {answer}')
+
+
 
     def run_sync_func(self):
         self.handler_on_start()
@@ -60,5 +69,5 @@ class AioBot:
 
 
 if __name__ == '__main__':
-    aiobot = AioBot('6698419785:AAHmb5ABGn1JNr0EG7zdRIfUMl-mPiCwBu8')
+    aiobot = AioBot('6549930645:AAHfOD2NAvMZBHCT22BiZCOyRQBs9K4Cwzw')
     asyncio.run(aiobot.start_polling())
