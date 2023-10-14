@@ -2,9 +2,11 @@ import aiohttp
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart, Command
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile, BufferedInputFile
+from aiogram.types.input_file import InputFile
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
+from io import BytesIO
 import asyncio
 import base64
 from parser import Parser
@@ -22,7 +24,7 @@ class AioBot:
     def handler_on_start(self):
         @self.dispatcher.message(CommandStart())
         async def handler_on_start(message: Message):
-            await self.bot.send_photo(message.chat.id, caption=text.start(), photo='photos/start_photo.jpg')
+            await self.bot.send_photo(message.chat.id, photo=InputFile('/Users/egor/PycharmProjects/hakaton/photos/start.jpg'))
 
     def handler_of_photo(self):
         @self.dispatcher.message(lambda m: m.photo)
