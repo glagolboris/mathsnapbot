@@ -3,6 +3,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart, Command
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import Message, CallbackQuery, FSInputFile, BufferedInputFile
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 from aiogram.types.input_file import InputFile
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
@@ -18,13 +19,16 @@ import text
 class AioBot:
     def __init__(self, api_id):
         self.bot = Bot(api_id)
+        self.builder = InlineKeyboardBuilder()
+        button = InlineKeyboardButton(text='Помощь', callback_data='help')
+        self.builder.add(button)
         self.dispatcher = Dispatcher()
         self.run_sync_func()
 
     def handler_on_start(self):
         @self.dispatcher.message(CommandStart())
         async def handler_on_start(message: Message):
-            await self.bot.send_photo(message.chat.id, photo=BufferedInputFile.from_file(path='photos/start.jpg', filename='start.jpg'), caption=text.start())
+            await self.bot.send_photo(message.chat.id, photo=BufferedInputFile.from_file(path='photos/start.jpg', filename='start.jpg'), caption=text.start(), reply_markup=self.builder.as_markup())
 
     def handler_of_photo(self):
         @self.dispatcher.message(lambda m: m.photo)
@@ -44,9 +48,9 @@ class AioBot:
             await self.bot.send_photo(message.chat.id, caption=help_, photo=BufferedInputFile.from_file('photos/help_photo.jpg', filename='help_photo.jpg'))
 
     def handler_callbacks(self):
-        @self.dispatcher.callback_query(lambda call: call.data == 'solve')
+        @self.dispatcher.callback_query(lambda call: call.data == 'help')
         async def callback(call: CallbackQuery):
-            msg = self.bot.send_message(call.message.chat.id, 'Ok. You may send me the image with equation')
+            msg = self.bot.send_photo(call.message.chat.id, photo=BufferedInputFile.from_file('photos/help_photo.jpg', filename='help.jpg'), caption=text.help())
             await msg
 
     async def callback_of(self, msg):
@@ -62,5 +66,5 @@ class AioBot:
 
 
 if __name__ == '__main__':
-    aiobot = AioBot('6698419785:AAHmb5ABGn1JNr0EG7zdRIfUMl-mPiCwBu8')
+    aiobot = AioBot('6549930645:AAHfOD2NAvMZBHCT22BiZCOyRQBs9K4Cwzw')
     asyncio.run(aiobot.start_polling())
