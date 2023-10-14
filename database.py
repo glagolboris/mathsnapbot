@@ -18,7 +18,12 @@ class Database:
             cur = await db.execute("SELECT History FROM Data WHERE ChatID = ?", (chat_id,))
             return await cur.fetchall()
 
-    async def insert(*args, **kwargs):
+    async def execute(*args, **kwargs):
         async with sql.connect("database.sqlite") as db:
             await db.execute(*args, **kwargs)
+            await db.commit()
+
+    async def executemany(*args, **kwargs):
+        async with sql.connect("database.sqlite") as db:
+            await db.executemany(*args, **kwargs)
             await db.commit()
