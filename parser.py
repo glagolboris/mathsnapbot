@@ -89,5 +89,9 @@ class Parser:
             print(answer_in_html_tags)
             answer: str = ''
             for ans in answer_in_html_tags:
-                answer += f"{BeautifulSoup(ans, 'html.parser').text};"
+                print(BeautifulSoup(ans, 'html.parser').text)
+                if re.search('&', BeautifulSoup(ans, 'html.parser').text):
+                    continue
+                else:
+                    answer += f"{BeautifulSoup(ans, 'html.parser').text};"
             return answer
