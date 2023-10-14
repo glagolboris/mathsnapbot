@@ -1,4 +1,3 @@
-@property
 def help() -> str:
     return """Как использовать MathSnapBot (MSB):
 1. Отправьте фотографию:
@@ -16,6 +15,6 @@ def help() -> str:
 
 Надеемся, это руководство поможет вам получить максимум от MathSnapBot. Успешных решений!"""
 
-@property
+
 def start() -> str:
     return """"""

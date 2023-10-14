@@ -38,7 +38,8 @@ class AioBot:
 
         @self.dispatcher.message(Command('help'))
         async def get_help(message: Message):
-            await self.bot.send_message(message.chat.id, text.help)
+            help_ = text.help()
+            await self.bot.send_message(message.chat.id, help_)
 
     def handler_callbacks(self):
         @self.dispatcher.callback_query(lambda call: call.data == 'solve')
