@@ -1,9 +1,9 @@
 import aiohttp
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, CallbackQuery, FSInputFile, BufferedInputFile
+from aiogram.types import Message, CallbackQuery, BufferedInputFile
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 import asyncio
 import base64
 from parser import Parser
