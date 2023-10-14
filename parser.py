@@ -33,7 +33,6 @@ class Parser:
 
         async with self.session.post(url=self.url_for_OCR, headers=headers, data=data) as response:
             response_json = await response.json()
-            print(response_json)
             if response_json['AsciiMath'].count(',') == 1:
                 return response_json['AsciiMath'].replace('{', '').replace('}', '').replace(':', '').replace(',', '\n').replace('[', '').replace(']', '')
             else:
@@ -60,7 +59,13 @@ class Parser:
 
         async with self.session.post(url=self.url_for_get_text, headers=headers, json=json_data) as response:
             response_json = await response.json()
-            return response_json['topics'][0]['Text'], response_json['topics'][0]['Id']
+            try:
+                return response_json['topics'][0]['Text'], response_json['topics'][0]['Id']
+            except KeyError:
+                soup = BeautifulSoup(response_json['messages'][0]['content'], 'html.parser')
+                var_2_5 = soup.find_all('div', class_='Explanation')[-3].find_next('script').text
+                print(var_2_5)
+                return response_json['messages'][0]['action']['params']['topicId'], response_json['messages'][0]['action']['params']['topicText']
 
     async def solve_eq(self, response_get_editor, response_get_equation):
         json_data = {"metadata": {"userId": 0,
@@ -85,12 +90,13 @@ class Parser:
 
         async with self.session.post(url=self.for_solve, headers=headers, json=json_data) as response:
             response_json = await response.json()
+            print(response_get_editor[0], response_get_editor[1], response_get_equation)
+            print(response_json)
             answer_in_html_tags = re.findall('<math>(.*?)</math>', response_json['messages'][0]['content'])
             solution_method_soup = BeautifulSoup(response_json['messages'][0]['content'], 'html.parser')
             solution_method = solution_method_soup.find('div', class_='Explanation').text
             answer: str = f'{solution_method}\n'
             for ans in answer_in_html_tags:
-                print(BeautifulSoup(ans, 'html.parser').text)
                 if re.search('×', BeautifulSoup(ans, 'html.parser').text):
                     continue
                 else:
