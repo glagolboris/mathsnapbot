@@ -1,19 +1,13 @@
 import aiohttp
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart, Command
-from aiogram.filters.callback_data import CallbackData
 from aiogram.types import Message, CallbackQuery, FSInputFile, BufferedInputFile
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
-from aiogram.types.input_file import InputFile
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
-from aiogram.utils.callback_answer import CallbackAnswerMiddleware
-from io import BytesIO
 import asyncio
 import base64
 from parser import Parser
 import text
-# TODO: STATE находится в ответе на запрос editor
-#  OCR запрос на расшифровку фото
 
 
 class AioBot:
