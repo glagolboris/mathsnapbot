@@ -24,4 +24,4 @@ class WolframAlphaSolver:
                     srcs.append(result['subpod']['img']['@src'])
             except Exception:
                 continue
-        return solution.replace('\n', '').replace(';', '\n'), srcs
+        return solution.replace('\n', '').replace(';', '\n'), list(sorted(srcs))
