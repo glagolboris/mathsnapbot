@@ -1,5 +1,4 @@
 import aiogram.exceptions
-import aiohttp
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery, BufferedInputFile
@@ -48,7 +47,8 @@ class AioBot:
         @self.dispatcher.message(Command('help'))
         async def get_help(message: Message):
             help_ = text.help()
-            await self.bot.send_photo(message.chat.id, caption=help_, photo=BufferedInputFile.from_file('photos/help_photo.jpg', filename='help_photo.jpg'))
+            await self.bot.send_photo(message.chat.id, caption=help_, photo=BufferedInputFile.from_file(
+                'photos/help_photo.jpg', filename='help_photo.jpg'))
 
         @self.dispatcher.message(lambda message: message.text)
         async def write_ascii(message: Message):
@@ -62,17 +62,21 @@ class AioBot:
             for url in urls:
                 list_of_input_files.append(aiogram.types.InputMediaPhoto(media=aiogram.types.URLInputFile(url)))
             await self.bot.send_media_group(message.chat.id, list_of_input_files[0:3])
+            await self.bot.send_message(message.chat.id, solution)
 
     def handler_callbacks(self):
         @self.dispatcher.callback_query(lambda call: call.data == 'help')
         async def callback_on_help(call: CallbackQuery):
-            msg = self.bot.send_photo(call.message.chat.id, photo=BufferedInputFile.from_file('photos/help_photo.jpg', filename='help.jpg'), caption=text.help())
+            msg = self.bot.send_photo(call.message.chat.id, photo=BufferedInputFile.from_file(
+                'photos/help_photo.jpg', filename='help.jpg'), caption=text.help())
             await msg
 
         @self.dispatcher.callback_query(lambda call: call.data == 'recognize_yes')
         async def callback_on_yes(call: CallbackQuery):
             # call.message.chat.id, await self.copies_parser[f'{call.message.chat.id}'].run_solve()
-            urls = await self.copies_parser[f'{call.message.chat.id}'].run_solve()
+            solution = await self.copies_parser[f'{call.message.chat.id}'].run_solve()
+            urls = solution[1]
+            answer = solution[0]
             try:
                 await self.bot.delete_message(call.message.chat.id, call.message.message_id)
             except aiogram.exceptions.TelegramBadRequest:
@@ -81,6 +85,7 @@ class AioBot:
             for url in urls:
                 list_of_input_files.append(aiogram.types.InputMediaPhoto(media=aiogram.types.URLInputFile(url)))
             await self.bot.send_media_group(call.message.chat.id, list_of_input_files[0:3])
+            await self.bot.send_message(call.message.chat.id, answer)
 
         @self.dispatcher.callback_query(lambda call: call.data == 'recognize_no')
         async def callback_on_no(call: CallbackQuery):
