@@ -22,6 +22,7 @@ class AioBot:
         button_yes = InlineKeyboardButton(text='Да', callback_data='recognize_yes')
         button_no = InlineKeyboardButton(text='Нет', callback_data='recognize_no')
         self.builder2.add(button_yes, button_no)
+        self.copies_parser: dict = {}
 
     def handler_on_start(self):
         @self.dispatcher.message(CommandStart())
@@ -38,8 +39,7 @@ class AioBot:
                 parser = Parser(session, base64.b64encode(photo_in_bytes.read()))
                 await self.bot.send_message(m.chat.id, f'Выражение было распознано как: \n```{await parser.get_equation}```\. '
                                                        f'\nВерно?', reply_markup=self.builder2.as_markup(), parse_mode="MarkdownV2")
-
-                await self.bot.send_message(m.chat.id, await parser.run_solve())
+                self.copies_parser[m.chat.id] = parser
 
         @self.dispatcher.message(Command('help'))
         async def get_help(message: Message):
@@ -54,8 +54,7 @@ class AioBot:
 
         @self.dispatcher.callback_query(lambda call: call.data == 'recognize_yes')
         async def callback(call: CallbackQuery):
-            global parser
-            await self.bot.send_message(call.message.chat.id, parser.run_solve())
+            await self.bot.send_message(call.message.chat.id, await self.copies_parser[call.message.chat.id].run_solve())
 
     def run_sync_func(self):
         self.handler_on_start()
