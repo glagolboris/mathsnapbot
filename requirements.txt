@@ -2,3 +2,4 @@ aiohttp
 aiogram
 aiosqlite
 BeautifulSoup4
+wolframalpha

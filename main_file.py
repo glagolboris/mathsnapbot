@@ -54,7 +54,8 @@ class AioBot:
 
         @self.dispatcher.callback_query(lambda call: call.data == 'recognize_yes')
         async def callback(call: CallbackQuery):
-            pass
+            global parser
+            await self.bot.send_message(call.message.chat.id, parser.run_solve())
 
     def run_sync_func(self):
         self.handler_on_start()
@@ -66,5 +67,5 @@ class AioBot:
 
 
 if __name__ == '__main__':
-    aiobot = AioBot('6549930645:AAHfOD2NAvMZBHCT22BiZCOyRQBs9K4Cwzw')
+    aiobot = AioBot('6698419785:AAHmb5ABGn1JNr0EG7zdRIfUMl-mPiCwBu8')
     asyncio.run(aiobot.start_polling())
