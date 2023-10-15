@@ -80,7 +80,7 @@ class AioBot:
             list_of_input_files: list = []
             for url in urls:
                 list_of_input_files.append(aiogram.types.InputMediaPhoto(media=aiogram.types.URLInputFile(url)))
-            await self.bot.send_media_group(message.chat.id, list_of_input_files[0:3])
+            await self.bot.send_media_group(call.message.chat.id, list_of_input_files[0:3])
 
         @self.dispatcher.callback_query(lambda call: call.data == 'recognize_no')
         async def callback_on_no(call: CallbackQuery):
