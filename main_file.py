@@ -68,5 +68,5 @@ class AioBot:
 
 
 if __name__ == '__main__':
-    aiobot = AioBot('6698419785:AAHmb5ABGn1JNr0EG7zdRIfUMl-mPiCwBu8')
+    aiobot = AioBot('6549930645:AAHfOD2NAvMZBHCT22BiZCOyRQBs9K4Cwzw')
     asyncio.run(aiobot.start_polling())
