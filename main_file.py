@@ -35,11 +35,10 @@ class AioBot:
             photo = m.photo[-1]
             photo_id = await self.bot.get_file(photo.file_id)
             photo_in_bytes = await self.bot.download_file(photo_id.file_path)
-            async with aiohttp.ClientSession() as session:
-                parser = Parser(session, base64.b64encode(photo_in_bytes.read()))
-                await self.bot.send_message(m.chat.id, f'Выражение было распознано как: \n```{await parser.get_equation}```\. '
-                                                       f'\nВерно?', reply_markup=self.builder2.as_markup(), parse_mode="MarkdownV2")
-                self.copies_parser[m.chat.id] = parser
+            parser = Parser(base64.b64encode(photo_in_bytes.read()))
+            await self.bot.send_message(m.chat.id, f'Выражение было распознано как: \n```{await parser.get_equation}```\. '
+                                                   f'\nВерно?', reply_markup=self.builder2.as_markup(), parse_mode="MarkdownV2")
+            self.copies_parser[f'{m.chat.id}'] = parser
 
         @self.dispatcher.message(Command('help'))
         async def get_help(message: Message):
@@ -54,7 +53,10 @@ class AioBot:
 
         @self.dispatcher.callback_query(lambda call: call.data == 'recognize_yes')
         async def callback_(call: CallbackQuery):
-            await self.bot.send_message(call.message.chat.id, await self.copies_parser[call.message.chat.id].run_solve())
+            # call.message.chat.id, await self.copies_parser[f'{call.message.chat.id}'].run_solve()
+            urls = await self.copies_parser[f'{call.message.chat.id}'].run_solve()
+            for url in urls[1]:
+                await self.bot.send_photo(call.message.chat.id, photo=url)
 
     def run_sync_func(self):
         self.handler_on_start()

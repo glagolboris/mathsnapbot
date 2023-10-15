@@ -1,12 +1,9 @@
-import re
 import aiohttp
-from bs4 import BeautifulSoup
 from wolfram_alpha import WolframAlphaSolver
 
 
 class Parser:
-    def __init__(self, session, photo_in_base64):
-        self.session: aiohttp.ClientSession = session
+    def __init__(self, photo_in_base64):
         self.url_for_get_text = 'https://www.mathway.com/chat/editor'
         self.url_for_OCR = 'https://www.mathway.com/OCR'
         self.for_solve = 'https://www.mathway.com/chat/topics'
@@ -31,10 +28,10 @@ class Parser:
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
             'x-requested-with': 'XMLHttpRequest'
         }
-
-        async with self.session.post(url=self.url_for_OCR, headers=headers, data=data) as response:
-            response_json = await response.json()
-            if response_json['AsciiMath'].count(',') == 1:
-                return response_json['AsciiMath'].replace('{', '').replace('}', '').replace(':', '').replace('[', '').replace(']', '')
-            else:
-                return response_json['AsciiMath'].replace('{', '').replace('}', '').replace(':', '')
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url=self.url_for_OCR, headers=headers, data=data) as response:
+                response_json = await response.json()
+                if response_json['AsciiMath'].count(',') == 1:
+                    return response_json['AsciiMath'].replace('{', '').replace('}', '').replace(':', '').replace('[', '').replace(']', '')
+                else:
+                    return response_json['AsciiMath'].replace('{', '').replace('}', '').replace(':', '')
