@@ -12,6 +12,7 @@ class WolframAlphaSolver:
         solution: str = ''
         srcs: list = []
         for result in res['pod']:
+            print(result)
             try:
                 if type(result['subpod']) == list:
                     sub_sol = f'{result["@title"]}: '

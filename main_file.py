@@ -53,7 +53,7 @@ class AioBot:
             await msg
 
         @self.dispatcher.callback_query(lambda call: call.data == 'recognize_yes')
-        async def callback(call: CallbackQuery):
+        async def callback_(call: CallbackQuery):
             await self.bot.send_message(call.message.chat.id, await self.copies_parser[call.message.chat.id].run_solve())
 
     def run_sync_func(self):
